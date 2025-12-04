@@ -1,0 +1,5 @@
+package Com.JavaProjectManagement.Miniproject.dto;
+
+public class AuthRequest {
+
+}

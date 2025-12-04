@@ -1,0 +1,9 @@
+package Com.JavaProjectManagement.Miniproject.model;
+
+public enum TaskStatus
+{
+	  PENDING, IN_PROGRESS, COMPLETED
+	}
+
+	
+

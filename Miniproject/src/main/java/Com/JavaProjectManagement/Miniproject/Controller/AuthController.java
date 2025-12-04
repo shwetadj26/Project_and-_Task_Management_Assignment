@@ -1,0 +1,44 @@
+package Com.JavaProjectManagement.Miniproject.Controller;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import Com.JavaProjectManagement.Miniproject.dto.AuthRequest;
+import Com.JavaProjectManagement.Miniproject.dto.AuthResponse;
+import Com.JavaProjectManagement.Miniproject.dto.UserDTO;
+import Com.JavaProjectManagement.Miniproject.service.AuthService;
+
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@Slf4j
+@RestController
+@RequestMapping("/api/auth")
+@CrossOrigin(origins = "*", maxAge = 3600)
+public class AuthController {
+
+    @Autowired
+    private AuthService authService;
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserDTO userDTO) {
+        log.info("Register endpoint called for user: {}",
+userDTO.getUsername());
+        UserDTO registeredUser = authService.registerUser(userDTO);
+        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> loginUser(@Valid @RequestBody AuthRequest authRequest) {
+        log.info("Login endpoint called for user: {}",
+authRequest.getUsername());
+        AuthResponse authResponse = authService.loginUser(authRequest);
+        return new ResponseEntity<>(authResponse, HttpStatus.OK);
+    }
+
+}

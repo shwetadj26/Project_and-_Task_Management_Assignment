@@ -1,0 +1,42 @@
+package Com.JavaProjectManagement.Miniproject.security;
+
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import Com.JavaProjectManagement.Miniproject.service.CustomUserDetailService;
+import io.jsonwebtoken.io.IOException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@Component
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private JwtUtils jwtUtils;
+    private CustomUserDetailService userDetailsService; // We usually need this to load full user data later
+
+    // Constructor Injection: Spring automatically passes these in!
+    public JwtAuthenticationFilter(JwtUtils jwtUtils, CustomUserDetailService userDetailsService) {
+        this.jwtUtils = jwtUtils;
+        this.userDetailsService = userDetailsService;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, 
+                                    HttpServletResponse response, 
+                                    FilterChain filterChain) throws ServletException, IOException {
+        
+        // TODO: Logic goes here
+        
+        try {
+			filterChain.doFilter(request, response);
+		} catch (java.io.IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+}

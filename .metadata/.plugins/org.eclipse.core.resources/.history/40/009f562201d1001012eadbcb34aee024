@@ -1,0 +1,103 @@
+package Com.JavaProjectManagement.Miniproject.service;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import Com.JavaProjectManagement.Miniproject.dto.AuthRequest;
+import Com.JavaProjectManagement.Miniproject.dto.AuthResponse;
+import Com.JavaProjectManagement.Miniproject.dto.LoginDto;
+import Com.JavaProjectManagement.Miniproject.dto.RegisterDto;
+import Com.JavaProjectManagement.Miniproject.dto.UserDTO;
+import Com.JavaProjectManagement.Miniproject.entity.User;
+import Com.JavaProjectManagement.Miniproject.repository.UserRepo;
+import Com.JavaProjectManagement.Miniproject.security.JwtUtils;
+import jakarta.validation.ValidationException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
+
+@Slf4j
+@Service
+@Transactional
+public class AuthService {
+
+    @Autowired
+    private UserRepo userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @Value("${jwt.expiration}")
+    private long jwtExpirationMs;
+
+    public UserDTO registerUser(UserDTO userDTO) {
+        log.info("Registering new user: {}", userDTO.getUsername());
+
+        if (userRepository.existsByUsername(userDTO.getUsername())) {
+            throw new ValidationException("Username is already taken");
+        }
+
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new ValidationException("Email is already registered");
+        }
+
+        User user = new User();
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+
+        User savedUser = userRepository.save(user);
+        log.info("User registered successfully: {}", savedUser.getId());
+
+        return mapUserToDTO(savedUser);
+    }
+
+    public AuthResponse loginUser(AuthRequest authRequest) {
+        log.info("Authenticating user: {}", authRequest.getUsername());
+
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            authRequest.getUsername(),
+                            authRequest.getPassword()
+                    )
+            );
+
+            String token = jwtTokenProvider.generateToken(authentication);
+            log.info("User authenticated successfully: {}",
+authRequest.getUsername());
+
+            return AuthResponse.builder()
+                    .token(token)
+                    .tokenType("Bearer")
+                    .username(authRequest.getUsername())
+                    .expiresIn(jwtExpirationMs)
+                    .build();
+        } catch (Exception e) {
+            log.error("Authentication failed for user: {}",
+authRequest.getUsername());
+            throw new ValidationException("Invalid username or password");
+        }
+    }
+
+    private UserDTO mapUserToDTO(User user) {
+        return UserDTO.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
+                .build();
+    }
+
+}

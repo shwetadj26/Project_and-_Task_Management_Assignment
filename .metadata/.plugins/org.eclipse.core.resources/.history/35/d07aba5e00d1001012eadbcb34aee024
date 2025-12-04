@@ -1,0 +1,9 @@
+package Com.JavaProjectManagement.Miniproject.model;
+
+public enum TaskPriority
+{
+	
+	    LOW, MEDIUM, HIGH
+	}
+
+

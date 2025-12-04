@@ -1,0 +1,5 @@
+package Com.JavaProjectManagement.Miniproject.exception;
+
+public class UnauthorizedException {
+
+}

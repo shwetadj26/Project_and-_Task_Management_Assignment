@@ -1,0 +1,19 @@
+spring.application.name=Mini Project Manager
+
+# H2 Database Configuration
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=password
+
+# Enables a UI to view the database in your browser
+spring.h2.console.enabled=true
+
+# Hibernate settings (automatically creates tables from our Java code)
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.hibernate.ddl-auto=update
+
+
+# JWT Configuration
+app.jwt.secret=9a2f8c4e6b0d71f3e8g9h0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z
+app.jwt.expiration=86400000

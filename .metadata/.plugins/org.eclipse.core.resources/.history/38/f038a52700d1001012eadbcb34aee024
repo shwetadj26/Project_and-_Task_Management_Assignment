@@ -1,0 +1,9 @@
+package Com.JavaProjectManagement.Miniproject.dto;
+
+import lombok.Data; // Assuming you use Lombok, otherwise generate Getters/Setters
+
+@Data
+public class LoginDto {
+    private String username;
+    private String password;
+}

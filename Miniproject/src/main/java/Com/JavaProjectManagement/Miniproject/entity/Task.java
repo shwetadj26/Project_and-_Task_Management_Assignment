@@ -1,0 +1,76 @@
+package Com.JavaProjectManagement.Miniproject.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "tasks")
+public class Task {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank(message = "Task title is required")
+    @Size(min = 1, max = 255, message = "Task title must be between 1 and 255 characters")
+    @Column(nullable = false)
+    private String title;
+
+    @Size(max = 1000, message = "Description cannot exceed 1000 characters")
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TaskStatus status = TaskStatus.PENDING;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TaskPriority priority = TaskPriority.MEDIUM;
+
+    @FutureOrPresent(message = "Due date cannot be in the past")
+    private LocalDate dueDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(nullable = false)
+
+    private LocalDateTime updatedAt;
+
+    public enum TaskStatus {
+        PENDING, IN_PROGRESS, COMPLETED
+    }
+
+    public enum TaskPriority {
+        LOW, MEDIUM, HIGH
+    }
+
+}

@@ -1,0 +1,5 @@
+package Com.JavaProjectManagement.Miniproject.filter;
+
+public class JwtAuthenticationFilter {
+
+}

@@ -1,0 +1,23 @@
+package Com.JavaProjectManagement.Miniproject.security;
+@Component
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private JwtUtils jwtUtils;
+    private UserDetailsService userDetailsService; // We usually need this to load full user data later
+
+    // Constructor Injection: Spring automatically passes these in!
+    public JwtAuthenticationFilter(JwtUtils jwtUtils, UserDetailsService userDetailsService) {
+        this.jwtUtils = jwtUtils;
+        this.userDetailsService = userDetailsService;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, 
+                                    HttpServletResponse response, 
+                                    FilterChain filterChain) throws ServletException, IOException {
+        
+        // TODO: Logic goes here
+        
+        filterChain.doFilter(request, response);
+    }
+}

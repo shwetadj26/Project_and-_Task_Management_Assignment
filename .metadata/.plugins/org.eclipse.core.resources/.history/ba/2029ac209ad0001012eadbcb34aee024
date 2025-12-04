@@ -1,0 +1,64 @@
+package Com.JavaProjectManagement.Miniproject.security;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import Com.JavaProjectManagement.Miniproject.service.CustomUserDetailService;
+import io.jsonwebtoken.io.IOException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@Component
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private JwtUtils jwtUtils;
+    private CustomUserDetailService userDetailsService; // We usually need this to load full user data later
+
+    // Constructor Injection: Spring automatically passes these in!
+    public JwtAuthenticationFilter(JwtUtils jwtUtils, CustomUserDetailService userDetailsService) {
+        this.jwtUtils = jwtUtils;
+        this.userDetailsService = userDetailsService;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, 
+                                    HttpServletResponse response, 
+                                    FilterChain filterChain) throws ServletException, IOException {
+        
+        // 1. Get the Authorization header
+        String authHeader = request.getHeader("Authorization");
+
+        // 2. Check if the header exists and starts with "Bearer "
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            
+            // 3. Extract the actual token
+            String token = authHeader.substring(7);
+
+            // 4. Validate the token using our JwtUtils
+            if (jwtUtils.validateToken(token)) {
+                
+            	// 5. Get the username from the token
+            	String username = jwtUtils.getUsername(token);
+
+            	// 6. Load the user details from the database
+            	UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+                // TODO: We know who they are, now we need to load their full profile!
+                
+            }
+        }
+        
+        try {
+			filterChain.doFilter(request, response);
+		} catch (java.io.IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+}

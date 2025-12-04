@@ -1,0 +1,5 @@
+package Com.JavaProjectManagement.Miniproject.security;
+
+public class JwtUtils {
+
+}

@@ -1,0 +1,5 @@
+package Com.JavaProjectManagement.Miniproject.model;
+
+public enum ProjectStatus {
+
+}

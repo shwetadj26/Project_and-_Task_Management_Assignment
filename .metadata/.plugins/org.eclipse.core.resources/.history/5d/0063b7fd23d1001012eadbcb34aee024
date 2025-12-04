@@ -1,0 +1,5 @@
+package Com.JavaProjectManagement.Miniproject.config;
+
+public class SwaggerConfig {
+
+}

@@ -1,0 +1,38 @@
+package Com.JavaProjectManagement.Miniproject.service;
+
+
+import java.util.Collections;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import Com.JavaProjectManagement.Miniproject.entity.User;
+import Com.JavaProjectManagement.Miniproject.repository.UserRepo;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class CustomUserDetailService implements UserDetailsService
+{
+	@Autowired
+    private final UserRepo userRepository;
+
+
+	@Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        // 1. Find the user in our DB
+        User user = userRepository.FindByemail
+        		(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        // 2. Convert to Spring Security's UserDetails
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                Collections.emptyList() // We can add roles/authorities here later
+        );
+    }
+}
