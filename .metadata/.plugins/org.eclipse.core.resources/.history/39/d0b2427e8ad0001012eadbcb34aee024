@@ -1,5 +1,0 @@
-package Com.JavaProjectManagement.Miniproject.repository;
-
-public interface ProjectRepo {
-
-}

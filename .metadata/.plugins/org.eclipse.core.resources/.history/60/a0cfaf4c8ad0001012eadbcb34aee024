@@ -1,9 +1,0 @@
-package Com.JavaProjectManagement.Miniproject.repository;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import Com.JavaProjectManagement.Miniproject.entity.User;
-
-public interface UserRepo extends JpaRepository<User,Long> {
-
-}
